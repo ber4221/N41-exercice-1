@@ -2,18 +2,22 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Consignes sonores – 9 cadres sur image</title>
+  <title>Consignes sonores – 9 cadres (responsive)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Référence A4 à 768 px de large (≈36.57 px/cm) */
     :root{
+      /* Base A4 à 768 px de large */
       --page-w: 768px;
-      --case-w: 201px;  /* 5.5 cm */
-      --case-h: 234px;  /* 6.4 cm */
-      --gap-x:  37px;   /* 1.0 cm */
-      --gap-y:  48px;   /* 1.3 cm */
-      --left0:  37px;   /* 1.0 cm du bord gauche */
-      --top0:  219px;   /* 6.0 cm du bord haut */
+      --page-h: 1086px; /* 29.7/21 * 768 */
+      --scale: 1;
+
+      /* Mesures converties (1 cm ≈ 36.57 px) */
+      --case-w: 201px;  /* 5,5 cm */
+      --case-h: 234px;  /* 6,4 cm */
+      --left0:  37px;   /* 1,0 cm du bord gauche */
+      --top0:   219px;  /* 6,0 cm du bord haut */
+      --gap-x:  37px;   /* 1,0 cm horizontal */
+      --gap-y:  48px;   /* 1,3 cm vertical */
     }
 
     *{ box-sizing: border-box; }
@@ -22,66 +26,96 @@
       min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
+
+    /* Le conteneur suit la largeur de l’écran (≤ 768px) */
     .wrap{
-      position:relative; width:var(--page-w); max-width:95vw;
-      /* hauteur auto: l'image fixe le ratio, on évite de la déformer */
+      position:relative;
+      width:95vw; max-width:var(--page-w);
     }
+    /* L’image de fond (ta feuille avec les 9 cadres colorés) */
     .wrap img{
       width:100%; display:block;
       user-select:none; -webkit-user-drag:none;
     }
+
+    /* Wrapper des zones cliquables : on le met à l’échelle */
+    .zones{
+      position:absolute; top:0; left:0;
+      width:var(--page-w); height:var(--page-h);
+      transform-origin: top left;
+      transform: scale(var(--scale));
+      pointer-events: none; /* pour éviter de bloquer les clics sur l'image hors zones */
+    }
+
+    /* Chaque zone cliquable (rectangles aux positions calculées) */
     .zone{
-      position:absolute; cursor:pointer; touch-action:manipulation;
-      width:var(--case-w); height:var(--case-h); border-radius:12px;
-      /* DEBUG: pour voir les zones pendant les tests, dé-commente la ligne suivante */
-      /* outline: 2px dashed rgba(0,0,0,.35); background: rgba(0,0,0,.06); */
+      position:absolute; width:var(--case-w); height:var(--case-h);
+      cursor:pointer; border-radius: 12px; touch-action: manipulation;
+      pointer-events: auto; /* réactive les clics sur les zones */
+      /* DEBUG : décommente pour voir les rectangles pendant le calage
+      outline: 2px dashed rgba(0,0,0,.35);
+      background: rgba(0,0,0,.06);
+      */
     }
   </style>
 </head>
 <body>
-  <div class="wrap" id="surface">
-    <!-- Ton image de fond (remplace le nom si besoin) -->
-    <img src="fond-cadres.jpg" alt="Feuille A4 avec 9 cadres">
+  <div class="wrap" id="wrap">
+    <!-- Remplace le nom si besoin -->
+    <img src="fond-cadres.jpg" alt="Feuille A4 avec 9 cadres de couleur">
 
-    <!-- LIGNE 1 -->
-    <div class="zone" style="top:219px; left:37px;"  onclick="play('son1.mp3')" aria-label="Cadre 1"></div>
-    <div class="zone" style="top:219px; left:275px;" onclick="play('son2.mp3')" aria-label="Cadre 2"></div>
-    <div class="zone" style="top:219px; left:513px;" onclick="play('son3.mp3')" aria-label="Cadre 3"></div>
+    <!-- ZONES cliquables (base 768 px) -->
+    <div class="zones" id="zones">
 
-    <!-- LIGNE 2 -->
-    <div class="zone" style="top:501px; left:37px;"  onclick="play('son4.mp3')" aria-label="Cadre 4"></div>
-    <div class="zone" style="top:501px; left:275px;" onclick="play('son5.mp3')" aria-label="Cadre 5"></div>
-    <div class="zone" style="top:501px; left:513px;" onclick="play('son6.mp3')" aria-label="Cadre 6"></div>
+      <!-- LIGNE 1 -->
+      <div class="zone" style="top:219px; left:37px;"
+           onclick="play('son1.mp3')" aria-label="Cadre 1"></div>
+      <div class="zone" style="top:219px; left:calc(37px + 201px + 37px);"
+           onclick="play('son2.mp3')" aria-label="Cadre 2"></div>
+      <div class="zone" style="top:219px; left:calc(37px + 2*(201px + 37px));"
+           onclick="play('son3.mp3')" aria-label="Cadre 3"></div>
 
-    <!-- LIGNE 3 -->
-    <div class="zone" style="top:783px; left:37px;"  onclick="play('son7.mp3')" aria-label="Cadre 7"></div>
-    <div class="zone" style="top:783px; left:275px;" onclick="play('son8.mp3')" aria-label="Cadre 8"></div>
-    <div class="zone" style="top:783px; left:513px;" onclick="play('son9.mp3')" aria-label="Cadre 9"></div>
+      <!-- LIGNE 2 -->
+      <div class="zone" style="top:calc(219px + 234px + 48px); left:37px;"
+           onclick="play('son4.mp3')" aria-label="Cadre 4"></div>
+      <div class="zone" style="top:calc(219px + 234px + 48px); left:calc(37px + 201px + 37px);"
+           onclick="play('son5.mp3')" aria-label="Cadre 5"></div>
+      <div class="zone" style="top:calc(219px + 234px + 48px); left:calc(37px + 2*(201px + 37px));"
+           onclick="play('son6.mp3')" aria-label="Cadre 6"></div>
+
+      <!-- LIGNE 3 -->
+      <div class="zone" style="top:calc(219px + 2*(234px + 48px)); left:37px;"
+           onclick="play('son7.mp3')" aria-label="Cadre 7"></div>
+      <div class="zone" style="top:calc(219px + 2*(234px + 48px)); left:calc(37px + 201px + 37px);"
+           onclick="play('son8.mp3')" aria-label="Cadre 8"></div>
+      <div class="zone" style="top:calc(219px + 2*(234px + 48px)); left:calc(37px + 2*(201px + 37px));"
+           onclick="play('son9.mp3')" aria-label="Cadre 9"></div>
+
+    </div>
   </div>
 
   <script>
-    // Lecteur unique pour éviter les chevauchements
-    const lecteur = new Audio();
-    function play(fichier){
+    // Lecteur audio unique (empêche tout chevauchement)
+    const player = new Audio();
+    function play(file){
       try{
-        lecteur.pause();
-        lecteur.currentTime = 0;
-        lecteur.src = fichier;
-        lecteur.play();
-      }catch(e){
-        console.error(e);
-      }
+        player.pause();
+        player.currentTime = 0;
+        player.src = file;
+        player.play();
+      }catch(e){ console.error(e); }
     }
 
-    /* Optionnel : outil de calibration.
-       Clique sur l'image (pas sur une zone) et lis les coordonnées dans la console. */
-    document.getElementById('surface').addEventListener('click', (e) => {
-      if (e.target.classList.contains('zone')) return;
-      const r = e.currentTarget.getBoundingClientRect();
-      const x = Math.round(e.clientX - r.left);
-      const y = Math.round(e.clientY - r.top);
-      console.log('Clique à x:', x, ' y:', y);
-    });
+    // Mise à l’échelle automatique des zones (mobile / ordi)
+    const BASE_W = 768; // largeur de référence
+    function rescaleZones(){
+      const wrap = document.getElementById('wrap');
+      const w = wrap.clientWidth;      // largeur réelle affichée
+      const s = w / BASE_W;            // facteur d’échelle
+      document.documentElement.style.setProperty('--scale', s);
+    }
+    window.addEventListener('load', rescaleZones);
+    window.addEventListener('resize', rescaleZones);
   </script>
 </body>
 </html>
