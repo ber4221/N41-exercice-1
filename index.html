@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Consignes sonores – 9 cadres sur image</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Référence A4 à 768 px de large (≈36.57 px/cm) */
+    :root{
+      --page-w: 768px;
+      --case-w: 201px;  /* 5.5 cm */
+      --case-h: 234px;  /* 6.4 cm */
+      --gap-x:  37px;   /* 1.0 cm */
+      --gap-y:  48px;   /* 1.3 cm */
+      --left0:  37px;   /* 1.0 cm du bord gauche */
+      --top0:  219px;   /* 6.0 cm du bord haut */
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0; background:#f5f5f5;
+      min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .wrap{
+      position:relative; width:var(--page-w); max-width:95vw;
+      /* hauteur auto: l'image fixe le ratio, on évite de la déformer */
+    }
+    .wrap img{
+      width:100%; display:block;
+      user-select:none; -webkit-user-drag:none;
+    }
+    .zone{
+      position:absolute; cursor:pointer; touch-action:manipulation;
+      width:var(--case-w); height:var(--case-h); border-radius:12px;
+      /* DEBUG: pour voir les zones pendant les tests, dé-commente la ligne suivante */
+      /* outline: 2px dashed rgba(0,0,0,.35); background: rgba(0,0,0,.06); */
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="surface">
+    <!-- Ton image de fond (remplace le nom si besoin) -->
+    <img src="fond-cadres.jpg" alt="Feuille A4 avec 9 cadres">
+
+    <!-- LIGNE 1 -->
+    <div class="zone" style="top:219px; left:37px;"  onclick="play('son1.mp3')" aria-label="Cadre 1"></div>
+    <div class="zone" style="top:219px; left:275px;" onclick="play('son2.mp3')" aria-label="Cadre 2"></div>
+    <div class="zone" style="top:219px; left:513px;" onclick="play('son3.mp3')" aria-label="Cadre 3"></div>
+
+    <!-- LIGNE 2 -->
+    <div class="zone" style="top:501px; left:37px;"  onclick="play('son4.mp3')" aria-label="Cadre 4"></div>
+    <div class="zone" style="top:501px; left:275px;" onclick="play('son5.mp3')" aria-label="Cadre 5"></div>
+    <div class="zone" style="top:501px; left:513px;" onclick="play('son6.mp3')" aria-label="Cadre 6"></div>
+
+    <!-- LIGNE 3 -->
+    <div class="zone" style="top:783px; left:37px;"  onclick="play('son7.mp3')" aria-label="Cadre 7"></div>
+    <div class="zone" style="top:783px; left:275px;" onclick="play('son8.mp3')" aria-label="Cadre 8"></div>
+    <div class="zone" style="top:783px; left:513px;" onclick="play('son9.mp3')" aria-label="Cadre 9"></div>
+  </div>
+
+  <script>
+    // Lecteur unique pour éviter les chevauchements
+    const lecteur = new Audio();
+    function play(fichier){
+      try{
+        lecteur.pause();
+        lecteur.currentTime = 0;
+        lecteur.src = fichier;
+        lecteur.play();
+      }catch(e){
+        console.error(e);
+      }
+    }
+
+    /* Optionnel : outil de calibration.
+       Clique sur l'image (pas sur une zone) et lis les coordonnées dans la console. */
+    document.getElementById('surface').addEventListener('click', (e) => {
+      if (e.target.classList.contains('zone')) return;
+      const r = e.currentTarget.getBoundingClientRect();
+      const x = Math.round(e.clientX - r.left);
+      const y = Math.round(e.clientY - r.top);
+      console.log('Clique à x:', x, ' y:', y);
+    });
+  </script>
+</body>
+</html>
